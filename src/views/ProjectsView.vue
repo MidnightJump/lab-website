@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import ProjectCard from '../components/ProjectCard.vue'
+import VideoPlayer from '../components/VideoPlayer.vue'
 import { getProjects } from '../data/projects'
 import { ElButton, ElInput, ElIcon } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
@@ -17,9 +18,6 @@ const logoImage = computed(() => {
   return new URL('../assets/images/lab_logo_icon.png', import.meta.url).href
 })
 
-// 图标URL
-const playIconUrl = new URL('../assets/images/projects/video-play.svg', import.meta.url).href
-const pauseIconUrl = new URL('../assets/images/projects/video-pause.svg', import.meta.url).href
 
 const navPages = [
   { path: '/', title: '首页', tooltip: '主页' },
@@ -52,8 +50,6 @@ const imageModalVisible = ref(false)
 const currentImage = ref('')
 
 // 视频播放控制
-const isVideoPlaying = ref(false)
-const mainVideo = ref(null)
 /**
  * 说明：本组件统一使用 @/assets/movies 下的视频资源
  * - 物理路径：src/assets/movies
@@ -61,6 +57,7 @@ const mainVideo = ref(null)
  * - 这里通过 new URL 的方式构造资源路径，确保构建产物也能正确引用
  */
 const videoSrc = new URL('../assets/movies/test1.mp4', import.meta.url).href
+const aContainerVideoSrc = new URL('../assets/movies/projects/AI伙伴视频高清.mp4', import.meta.url).href
 
 // 打开图片模态框
 const openImageModal = (imageSrc) => {
@@ -68,34 +65,6 @@ const openImageModal = (imageSrc) => {
   imageModalVisible.value = true
 }
 
-// 切换视频播放状态
-const toggleVideo = () => {
-  if (mainVideo.value) {
-    const video = mainVideo.value
-    try {
-      if (video.paused) {
-        const p = video.play()
-        if (p && typeof p.then === 'function') {
-          p.then(() => { isVideoPlaying.value = true }).catch((e) => {
-            console.error('视频播放失败:', e)
-          })
-        } else {
-          isVideoPlaying.value = true
-        }
-      } else {
-        video.pause()
-        isVideoPlaying.value = false
-      }
-    } catch (e) {
-      console.error('切换播放状态出错:', e)
-    }
-  }
-}
-
-// 视频播放结束
-const onVideoEnded = () => {
-  isVideoPlaying.value = false
-}
 
 // 语言切换
 const switchLanguage = (lang) => {
@@ -193,22 +162,12 @@ onMounted(async () => {
         <!-- A容器 - 项目列表 -->
         <section class="a-container">
           <div class="container-header">
-            <video 
-              src="../assets/movies/projects/AI伙伴视频高清.mp4" 
-              class="header-background-image"
-              autoplay
-              loop
-              playsinline
-              controls
-            ></video>
-            
-            <!-- 组合标题：左侧黑到紫的渐变效果，分词可单独控制 -->
-            <!-- <h2 class="title-composed">
-              <span class="title-left">Vivid&nbsp;--&nbsp;项目名称</span>
-              <span class="title-sep">&nbsp;--&nbsp;</span>
-              <span class="title-right">项目名称</span>
-            </h2>
-            <p>这里是项目简介，这里是项目简介，这里是项目简介，这里是项目简介，这里是项目简介。</p> -->
+            <VideoPlayer 
+              :video-src="aContainerVideoSrc"
+              video-class="header-background-image"
+              :autoplay="true"
+              :loop="true"
+            />
           </div>
         </section>
         <!-- B容器 - 引用图片展示区 -->
@@ -258,52 +217,16 @@ onMounted(async () => {
                 </p>
               </div>
               <div class="container-content-video">
-                <div class="video-wrapper">
-                  <video 
-                    ref="mainVideo"
-                    :src="videoSrc"
-                    playsinline
-                    @click="toggleVideo"
-                    @ended="onVideoEnded"
-                  ></video>
-                  <el-button
-                    class="custom-play-button"
-                    type="primary"
-                    circle
-                    @click.stop="toggleVideo"
-                  >
-                    <img 
-                      :src="isVideoPlaying ? pauseIconUrl : playIconUrl"
-                      alt="播放/暂停"
-                      style="width: 56px; height: 56px;"
-                    />
-                  </el-button>
-                </div>
+                <VideoPlayer 
+                  :video-src="videoSrc"
+                />
               </div>
             </div>
             <div class="content-layout-down">
               <div class="container-content-video">
-                <div class="video-wrapper">
-                  <video 
-                    ref="mainVideo"
-                    :src="videoSrc"
-                    playsinline
-                    @click="toggleVideo"
-                    @ended="onVideoEnded"
-                  ></video>
-                  <el-button
-                    class="custom-play-button"
-                    type="primary"
-                    circle
-                    @click.stop="toggleVideo"
-                  >
-                    <img 
-                      :src="isVideoPlaying ? pauseIconUrl : playIconUrl"
-                      alt="播放/暂停"
-                      style="width: 56px; height: 56px;"
-                    />
-                  </el-button>
-                </div>
+                <VideoPlayer 
+                  :video-src="videoSrc"
+                />
               </div>
               <div class="container-content-description">
                 <h2>标题 -- 主链路完整系统功能介绍</h2>
@@ -678,6 +601,21 @@ onMounted(async () => {
     background: none;
     overflow: hidden;
     
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+      
+      video {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    
     .header-background-image {
       position: absolute;
       top: 0;
@@ -881,23 +819,6 @@ onMounted(async () => {
         // justify-content: center;
         // padding: 20px;
         margin-top: 100px;
-        .video-wrapper {
-          position: relative;
-          width: 100%;
-          height: 527px;
-          border-radius: 16px;
-          // padding-bottom:100px;
-          video {
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-            background: #000;
-            cursor: pointer;
-          }
-        }
       }
     }
   }
@@ -930,34 +851,6 @@ onMounted(async () => {
   }
   
   
-  .custom-play-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    // background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    --el-button-bg-color: transparent;
-    --el-button-hover-bg-color: transparent;
-    --el-button-active-bg-color: transparent;
-    --el-button-border-color: transparent;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 5; // 降低z-index，确保不遮挡header
-    
-    &:hover {
-      background: transparent;
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-  }
 }
 
 
