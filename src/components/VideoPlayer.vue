@@ -7,6 +7,7 @@
       :autoplay="autoplay"
       :loop="loop"
       :muted="muted"
+      :style="{ objectFit: objectFit }"
       playsinline
       @click="onVideoClick"
       @ended="onVideoEnded"
@@ -52,6 +53,10 @@ const props = defineProps({
   muted: {
     type: Boolean,
     default: false
+  },
+  objectFit: {
+    type: String,
+    default: 'cover' // 'cover' 或 'contain'
   }
 })
 

@@ -188,13 +188,10 @@ onMounted(async () => {
                   :key="vid"
                 >
                   <div class="carousel-video-item">
-                    <div class="video-wrapper">
-                      <video 
-                        :src="vid"
-                        controls
-                        playsinline
-                      ></video>
-                    </div>
+                    <VideoPlayer 
+                      :video-src="vid"
+                      object-fit="contain"
+                    />
                   </div>
                 </el-carousel-item>
               </el-carousel>
@@ -302,7 +299,7 @@ onMounted(async () => {
   color: #ffffff;
   z-index: 1;
   padding: 0 0;
-  height: 120px;
+  height: 100px;
   box-shadow: var(--shadow);
   position: sticky;
   top: 0;
