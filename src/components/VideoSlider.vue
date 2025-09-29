@@ -23,8 +23,18 @@
               您的浏览器不支持视频播放。
             </video>
             <button class="play-button" @click="playVideo(0)">
-              <el-icon v-if="!playingStates[0]"><VideoPlay /></el-icon>
-              <el-icon v-else><VideoPause /></el-icon>
+              <img 
+                v-if="!playingStates[0]"
+                :src="playIconUrl"
+                alt="播放"
+                style="width: 48px; height: 48px;"
+              />
+              <img 
+                v-else
+                :src="pauseIconUrl"
+                alt="暂停"
+                style="width: 48px; height: 48px;"
+              />
             </button>
             <div class="video-overlay" v-if="!playingStates[0]" @click="playVideo(0)">
               <div class="video-title">{{ videos[0].title }}</div>
@@ -47,8 +57,18 @@
               您的浏览器不支持视频播放。
             </video>
             <button class="play-button" @click="playVideo(1)">
-              <el-icon v-if="!playingStates[1]"><VideoPlay /></el-icon>
-              <el-icon v-else><VideoPause /></el-icon>
+              <img 
+                v-if="!playingStates[1]"
+                :src="playIconUrl"
+                alt="播放"
+                style="width: 48px; height: 48px;"
+              />
+              <img 
+                v-else
+                :src="pauseIconUrl"
+                alt="暂停"
+                style="width: 48px; height: 48px;"
+              />
             </button>
             <div class="video-overlay" v-if="!playingStates[1]" @click="playVideo(1)">
               <div class="video-title">{{ videos[1].title }}</div>
@@ -71,8 +91,18 @@
               您的浏览器不支持视频播放。
             </video>
             <button class="play-button" @click="playVideo(2)">
-              <el-icon v-if="!playingStates[2]"><VideoPlay /></el-icon>
-              <el-icon v-else><VideoPause /></el-icon>
+              <img 
+                v-if="!playingStates[2]"
+                :src="playIconUrl"
+                alt="播放"
+                style="width: 48px; height: 48px;"
+              />
+              <img 
+                v-else
+                :src="pauseIconUrl"
+                alt="暂停"
+                style="width: 48px; height: 48px;"
+              />
             </button>
             <div class="video-overlay" v-if="!playingStates[2]" @click="playVideo(2)">
               <div class="video-title">{{ videos[2].title }}</div>
@@ -102,6 +132,10 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 // 响应式数据
 const activeIndex = ref(1) // 默认中间卡片为活跃状态
 const playingStates = ref([false, false, false]) // 播放状态
+
+// 图标URL
+const playIconUrl = new URL('../assets/images/projects/video-play.svg', import.meta.url).href
+const pauseIconUrl = new URL('../assets/images/projects/video-pause.svg', import.meta.url).href
 
 // 计算属性：计算滑动距离
 const translateX = computed(() => {

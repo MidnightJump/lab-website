@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import ProjectCard from '../components/ProjectCard.vue'
 import { getProjects } from '../data/projects'
 import { ElButton, ElInput, ElIcon } from 'element-plus'
-import { VideoPlay, VideoPause, Search } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 const projects = ref([])
 const moreProjects = ref([])
 
@@ -16,6 +16,10 @@ const searchQuery = ref('')
 const logoImage = computed(() => {
   return new URL('../assets/images/lab_logo_icon.png', import.meta.url).href
 })
+
+// 图标URL
+const playIconUrl = new URL('../assets/images/projects/video-play.svg', import.meta.url).href
+const pauseIconUrl = new URL('../assets/images/projects/video-pause.svg', import.meta.url).href
 
 const navPages = [
   { path: '/', title: '首页', tooltip: '主页' },
@@ -189,11 +193,14 @@ onMounted(async () => {
         <!-- A容器 - 项目列表 -->
         <section class="a-container">
           <div class="container-header">
-            <img 
-              src="../assets/images/projects/image.png" 
-              alt="项目图片" 
+            <video 
+              src="../assets/movies/projects/AI伙伴视频高清.mp4" 
               class="header-background-image"
-            />
+              autoplay
+              loop
+              playsinline
+              controls
+            ></video>
             
             <!-- 组合标题：左侧黑到紫的渐变效果，分词可单独控制 -->
             <!-- <h2 class="title-composed">
@@ -265,9 +272,11 @@ onMounted(async () => {
                     circle
                     @click.stop="toggleVideo"
                   >
-                    <el-icon :size="56">
-                      <component :is="isVideoPlaying ? VideoPause : VideoPlay" />
-                    </el-icon>
+                    <img 
+                      :src="isVideoPlaying ? pauseIconUrl : playIconUrl"
+                      alt="播放/暂停"
+                      style="width: 56px; height: 56px;"
+                    />
                   </el-button>
                 </div>
               </div>
@@ -288,9 +297,11 @@ onMounted(async () => {
                     circle
                     @click.stop="toggleVideo"
                   >
-                    <el-icon :size="56">
-                      <component :is="isVideoPlaying ? VideoPause : VideoPlay" />
-                    </el-icon>
+                    <img 
+                      :src="isVideoPlaying ? pauseIconUrl : playIconUrl"
+                      alt="播放/暂停"
+                      style="width: 56px; height: 56px;"
+                    />
                   </el-button>
                 </div>
               </div>
@@ -367,7 +378,8 @@ onMounted(async () => {
   background: #7a7a7a;
   color: #ffffff;
   z-index: 1;
-  padding: 20px 0;
+  padding: 0 0;
+  height: 120px;
   box-shadow: var(--shadow);
   position: sticky;
   top: 0;
@@ -655,13 +667,13 @@ onMounted(async () => {
 
 .a-container{
   width:100%;
-  height: 1240px;
+  height: auto;
   padding: 0 0 0 0;
   background: #fff;
   .container-header{
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 915px;
     padding: 0 0 0 0;
     background: none;
     overflow: hidden;
@@ -669,7 +681,8 @@ onMounted(async () => {
     .header-background-image {
       position: absolute;
       top: 0;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
       width: auto;
       height: 100%;
       object-fit: cover;
@@ -919,8 +932,9 @@ onMounted(async () => {
   
   .custom-play-button {
     position: absolute;
-    top: 30px;
-    right: 40px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -941,7 +955,7 @@ onMounted(async () => {
     
     &:hover {
       background: transparent;
-      transform: scale(1.05);
+      transform: translate(-50%, -50%) scale(1.05);
     }
   }
 }
